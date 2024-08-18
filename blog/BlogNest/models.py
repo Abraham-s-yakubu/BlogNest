@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
+from ckeditor.fields import RichTextField
+from django.utils.text import slugify
 
 
 def get_thumbnail_path(instance, filename):
@@ -44,15 +46,28 @@ def validate_image_format(image):
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
-    body = models.TextField()
+    slug = models.SlugField(unique=True,blank=True)
+    body = RichTextField(blank=True,null=True)
     main_image = models.ImageField(upload_to='main-images/', null=True, blank=True)
     thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True)
+    intro = models.TextField(max_length=300, help_text="A short introduction or summary of the post")
     author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='posts', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, related_name='posts')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        original_slug = self.slug
+        queryset = Post.objects.filter(slug=self.slug)
+        counter = 1
+        while queryset.exists():
+            self.slug = f'{original_slug}-{counter}'
+            counter += 1
+            queryset = Post.objects.filter(slug=self.slug)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

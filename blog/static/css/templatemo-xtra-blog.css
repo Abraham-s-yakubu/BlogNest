@@ -488,6 +488,16 @@ a:hover {
   text-decoration: none;
   color: #048c8c;
 }
+.comment-reply-date{
+gap:50px;
+}
+.comment-footer{
+align-self: normal;
+display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
 
 a:hover figcaption {
   color: #056767;
