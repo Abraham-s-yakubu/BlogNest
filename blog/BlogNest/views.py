@@ -1,14 +1,15 @@
 from django.db.models import Count
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
 from .models import Post
-from .forms import PostForm
+from .forms import PostForm, CommentForm
+
 
 # Create your views here.
 def index(request):
-    # post_content = Post.objects.all()
     post_content = Post.objects.annotate(num_comments=Count('comments'))
     # post_content.body = mark_safe(post_content.body)
     return render(request, "index.html", {'posts': post_content})
@@ -19,11 +20,32 @@ def index(request):
 #     return render(request,"post.html")
 
 
-def post_detail(request, slug):
+def post_detail(request, slug,):
     post = get_object_or_404(Post, slug=slug)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            print(comment)
+            print(post)
+            comment.save()
+            return redirect('post', slug=slug)  # Redirects to the same post page
+
+    else:
+        form = CommentForm()
+
     comments = post.comments.all()
-    post.body = mark_safe(post.body)
-    return render(request, 'post.html', {'post': post, 'comments': comments})
+
+
+
+    return render(request, 'post.html', {
+        'post': post,
+        'form': form,
+        'comments': comments,
+    })
+
 
 
 # def create_post(request):

@@ -495,7 +495,11 @@ gap:50px;
 align-self: normal;
 display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
+}
+
+.comment-body{
+padding-top:12px
 }
 
 

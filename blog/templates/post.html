@@ -14,15 +14,44 @@
     <!-- https://fonts.google.com/ -->
     <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" />
     <link href="{% static 'css/templatemo-xtra-blog.css'%}" rel="stylesheet" />
-    <!--
-    
-TemplateMo 553 Xtra Blog
+     <style>
+        #loadingSpinner {
+            display: none; /* Hide it by default */
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 100px;
+            height: 100px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            animation: spin 2s linear infinite;
+        }
 
-https://templatemo.com/tm-553-xtra-blog
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
--->
+        #overlay {
+            display: none; /* Hide it by default */
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
   </head>
   <body>
+  <div id="overlay"></div>
+  <div id="loadingSpinner"></div>
     <header class="tm-header" id="tm-header">
       <div class="tm-header-wrapper">
         <button
@@ -136,7 +165,7 @@ https://templatemo.com/tm-553-xtra-blog
                 </h2>
                 <p class="tm-mb-40">{{ post.created_at|date:"M. d, Y" }} posted by {{post.author}}</p>
                 <p>
-                    {{post.body}}
+                    {{post.body|safe}}
 <!--                  This is a description of the video post. You can also have an-->
 <!--                  image instead of the video. You can free download-->
 <!--                  <a-->
@@ -178,20 +207,20 @@ https://templatemo.com/tm-553-xtra-blog
                 <div class="tm-comment tm-mb-45">
                   <figure class="tm-comment-figure">
                     <img
-                      src="{% static 'img/comment-1.jpg'%}"
+                      src="{% static 'img/profile.png'%}"
                       alt="Image"
                       class="mb-2 rounded-circle img-thumbnail"
                     />
                     <figcaption class="tm-color-primary text-center">
-                      {{comment.author}}
+                      {{comment.name}}
                     </figcaption>
                   </figure>
                   <div class="comment-footer">
-                    <p>
+                    <p class="comment-body">
                       {{comment.body}}
                     </p>
                     <div class="d-flex justify-content-between comment-reply-date">
-                      <a href="#" class="tm-color-primary">REPLY</a>
+<!--                      <a href="#" class="tm-color-primary">REPLY</a>-->
                       <span class="tm-color-primary">{{ comment.created_at|date:"M. d, Y" }}</span>
                     </div>
                   </div>
@@ -226,22 +255,34 @@ https://templatemo.com/tm-553-xtra-blog
 
 <!--                  comment form-->
 
-                <form action="" class="mb-5 tm-comment-form">
+                <form id="commentForm" method="post" class="mb-5 tm-comment-form">
+                  {% csrf_token %}
                   <h2 class="tm-color-primary tm-post-title mb-4">
                     Your comment
                   </h2>
                   <div class="mb-4">
-                    <input class="form-control" name="name" type="text" />
+                    {{ form.post }}
                   </div>
                   <div class="mb-4">
-                    <input class="form-control" name="email" type="text" />
+                    {{ form.name }}
                   </div>
+<!--                  <div class="mb-4">-->
+<!--&lt;!&ndash;                    <input class="form-control" name="email" type="text" />&ndash;&gt;-->
+<!--                      {{ form.email }}-->
+<!--                      {% if form.email.errors %}-->
+<!--                      <div class="error">{{ form.email.errors }}</div>-->
+<!--                      {% endif %}-->
+<!--                  </div>-->
                   <div class="mb-4">
-                    <textarea
-                      class="form-control"
-                      name="message"
-                      rows="6"
-                    ></textarea>
+<!--                    <textarea-->
+<!--                      class="form-control"-->
+<!--                      name="message"-->
+<!--                      rows="6"-->
+<!--                    ></textarea>-->
+                    {{ form.body }}
+                    {% if form.body.errors %}
+                    <div class="error">{{ form.body.errors }}</div>
+                    {% endif %}
                   </div>
                   <div class="text-right">
                     <button class="tm-btn tm-btn-primary tm-btn-small">
@@ -322,5 +363,12 @@ https://templatemo.com/tm-553-xtra-blog
     </div>
     <script src="{% static 'js/jquery.min.js'%}"></script>
     <script src="{% static 'js/templatemo-script.js'%}"></script>
+    <script>
+    document.getElementById('commentForm').addEventListener('submit', function() {
+
+        // Show the loading spinner and overlay
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('loadingSpinner').style.display = 'block';})
+</script>
   </body>
 </html>
