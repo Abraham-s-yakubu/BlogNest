@@ -70,7 +70,7 @@
         <nav class="tm-nav" id="tm-nav">
           <ul>
             <li class="tm-nav-item">
-              <a href="index" class="tm-nav-link">
+              <a href="{% url 'index' %}" class="tm-nav-link">
                 <i class="fas fa-home"></i>
                 Blog Home
               </a>
@@ -166,27 +166,7 @@
                 <p class="tm-mb-40">{{ post.created_at|date:"M. d, Y" }} posted by {{post.author}}</p>
                 <p>
                     {{post.body|safe}}
-<!--                  This is a description of the video post. You can also have an-->
-<!--                  image instead of the video. You can free download-->
-<!--                  <a-->
-<!--                    rel="nofollow"-->
-<!--                    href="https://templatemo.com/tm-553-xtra-blog"-->
-<!--                    target="_blank"-->
-<!--                    >Xtra Blog Template</a-->
-<!--                  >-->
-<!--                  from TemplateMo website. Phasellus maximus quis est sit amet-->
-<!--                  maximus. Vestibulum vel rutrum lorem, ac sodales augue.-->
-<!--                  Aliquam erat volutpat. Duis lectus orci, blandit in arcu est,-->
-<!--                  elementum tincidunt lectus. Praesent vel justo tempor, varius-->
-<!--                  lacus a, pharetra lacus.-->
-<!--                </p>-->
-<!--                <p>-->
-<!--                  Duis pretium efficitur nunc. Mauris vehicula nibh nisi.-->
-<!--                  Curabitur gravida neque dignissim, aliquet nulla sed,-->
-<!--                  condimentum nulla. Pellentesque id venenatis quam, id cursus-->
-<!--                  velit. Fusce semper tortor ac metus iaculis varius. Praesent-->
-<!--                  aliquam ex vel lectus ornare tristique. Nunc et eros quis enim-->
-<!--                  feugiat tincidunt et vitae dui.-->
+
                 </p>
                 <span class="d-block text-right tm-color-primary"
                   > {% for tag in post.tags.all %}
@@ -305,42 +285,20 @@
               <h2 class="tm-mb-35 tm-post-title tm-color-primary">
                 Related Posts
               </h2>
-              <a href="#" class="d-block tm-mb-40">
+              {% for related_post in related_posts %}
+              <a href="{% url 'post' related_post.slug %}" class="d-block tm-mb-40">
                 <figure>
                   <img
-                    src="{% static 'img/img-02.jpg'%}"
+                    src="{{ related_post.thumbnail.url }}"
                     alt="Image"
                     class="mb-3 img-fluid"
                   />
                   <figcaption class="tm-color-primary">
-                    Duis mollis diam nec ex viverra scelerisque a sit
+                    {{ related_post.title }}
                   </figcaption>
                 </figure>
               </a>
-              <a href="#" class="d-block tm-mb-40">
-                <figure>
-                  <img
-                    src="{% static 'img/img-05.jpg'%}"
-                    alt="Image"
-                    class="mb-3 img-fluid"
-                  />
-                  <figcaption class="tm-color-primary">
-                    Integer quis lectus eget justo ullamcorper ullamcorper
-                  </figcaption>
-                </figure>
-              </a>
-              <a href="#" class="d-block tm-mb-40">
-                <figure>
-                  <img
-                    src="{% static 'img/img-06.jpg'%}"
-                    alt="Image"
-                    class="mb-3 img-fluid"
-                  />
-                  <figcaption class="tm-color-primary">
-                    Nam lobortis nunc sed faucibus commodo
-                  </figcaption>
-                </figure>
-              </a>
+              {%endfor%}
             </div>
           </aside>
         </div>

@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.safestring import mark_safe
@@ -22,6 +22,11 @@ def index(request):
 
 def post_detail(request, slug,):
     post = get_object_or_404(Post, slug=slug)
+    # Get related posts by category or tags
+    related_posts = Post.objects.filter(
+        Q(category=post.category) |
+        Q(tags__in=post.tags.all())
+    ).exclude(id=post.id).distinct()[:5]
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -38,18 +43,26 @@ def post_detail(request, slug,):
 
     comments = post.comments.all()
 
-
-
-    return render(request, 'post.html', {
+    context = {
         'post': post,
-        'form': form,
+        'related_posts': related_posts,
         'comments': comments,
-    })
+        'form': form,
+    }
 
 
+    return render(request, 'post.html',context)
 
-# def create_post(request):
-#     return render(request, "create_post.html")
+
+def search(request):
+    query = request.GET.get('query')
+    if query:
+        posts = Post.objects.filter(title__icontains=query) | Post.objects.filter(body__icontains=query)
+    else:
+        posts = Post.objects.all()
+
+    return render(request, 'search_results.html', {'posts': posts, 'query': query})
+
 
 
 # @login_required

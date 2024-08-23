@@ -11,6 +11,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'intro', 'body', 'thumbnail', 'main_image', 'category', 'tags']
+        widgets = {
+            'intro': forms.Textarea(attrs={'rows': 4}),
+        }
 
 
 class CommentForm(forms.ModelForm):
