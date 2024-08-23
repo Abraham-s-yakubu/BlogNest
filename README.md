@@ -100,4 +100,4 @@ If you have any questions or feedback, feel free to reach out:
 ---
 
 Thank you for checking out BlogNest! Happy blogging!
-```
+
