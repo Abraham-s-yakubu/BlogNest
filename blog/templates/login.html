@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="mt-5">Login to Your Account</h2>
+     {% if messages %}
+        <div id="success-alert" class="alert alert-success" style="display: none;">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+    <form method="post" class="mt-4 form_shadow">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger mt-2">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary btn-block mt-3">Login</button>
+    </form>
+    <p class="mt-3">Don't have an account? <a href="{% url 'register' %}">Sign up here</a></p>
+    <p><a href="">Forgot your password?</a></p>
+</div>
+{% endblock %}
+

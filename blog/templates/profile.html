@@ -1,0 +1,180 @@
+
+
+{% extends 'index.html' %}
+{% load custom_filters %}
+
+{%load static%}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">User Profile</h2>
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
+                    {{ message }}
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="closeAlert()" aria-label="Close"></button>-->
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row">
+                <!-- Profile Picture Section -->
+                <div class="col-md-4 text-center">
+                    {% if user.profile.profile_pic %}
+                        <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="rounded-circle img-fluid" style="max-width: 150px;">
+
+                    {% endif %}
+                    <h4 class="mt-3">{{ user.username }}</h4>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+
+                <!-- User Details Section -->
+                <div class="col-md-8">
+                    <h5>Personal Information</h5>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>First Name:</strong>
+                            <p>{{ user.first_name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Last Name:</strong>
+                            <p>{{ user.last_name }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Username:</strong>
+                            <p>{{ user.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Email:</strong>
+                            <p>{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <strong>About Me:</strong>
+                            <p>{{ user.profile.bio }}</p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button id="updateProfileBtn" class="btn btn-primary me-2">Edit Profile</button>
+                        <button id="changePasswordBtn" class="btn btn-secondary">Change Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Update Form -->
+    <div id="profileForm" class="card shadow-sm mb-4 d-none">
+        <div class="card-header">
+            <h4 class="card-title mb-0">Update Profile</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Form fields for profile update -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_username" class="form-label">Username</label>
+                        {{ user_form.username|add_class:"form-control" }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_email" class="form-label">Email</label>
+                        {{ user_form.email|add_class:"form-control" }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_first_name" class="form-label">First Name</label>
+                        {{ user_form.first_name|add_class:"form-control" }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_last_name" class="form-label">Last Name</label>
+                        {{ user_form.last_name|add_class:"form-control" }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_profile_picture" class="form-label">Profile Picture</label>
+                    {{ profile_form.profile_pic|add_class:"form-control" }}
+                </div>
+
+                <button type="submit" name="update_profile" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Change Form -->
+    <div id="passwordForm" class="card shadow-sm mb-4 d-none">
+        <div class="card-header">
+            <h4 class="card-title mb-0">Change Password</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Form fields for password change -->
+                <div class="mb-3">
+                    <label for="id_old_password" class="form-label">Old Password</label>
+                    {{ password_form.old_password|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_new_password1" class="form-label">New Password</label>
+                    {{ password_form.new_password1|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_new_password2" class="form-label">Confirm New Password</label>
+                    {{ password_form.new_password2|add_class:"form-control" }}
+                </div>
+
+                <button type="submit" name="change_password" class="btn btn-secondary">Change Password</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Posts -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h4 class="card-title mb-0">Your Posts</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                {% for post in posts %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'post' post.slug %}" class="text-decoration-none">{{ post.title }}</a>
+                        <span>
+                            <a href="" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No posts available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for toggling forms -->
+<script>
+    document.getElementById('updateProfileBtn').addEventListener('click', function() {
+        document.getElementById('profileForm').classList.toggle('d-none');
+        document.getElementById('passwordForm').classList.add('d-none');
+    });
+
+    document.getElementById('changePasswordBtn').addEventListener('click', function() {
+        document.getElementById('passwordForm').classList.toggle('d-none');
+        document.getElementById('profileForm').classList.add('d-none');
+    });
+</script>
+{% endblock %}

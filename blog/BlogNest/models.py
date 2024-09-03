@@ -50,7 +50,8 @@ class Post(models.Model):
     body = RichTextField(blank=True,null=True)
     main_image = models.ImageField(upload_to='main-images/', null=True, blank=True)
     thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True)
-    intro = models.TextField(max_length=300, help_text="A short introduction or summary of the post")
+    intro = models.TextField(max_length=300, help_text="A short introduction or summary of the post recommended words "
+                                                      "'30' ")
     author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='posts', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, related_name='posts')
@@ -83,3 +84,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.name} on {self.post}'
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"

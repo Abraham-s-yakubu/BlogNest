@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "BlogNest",
+    'BlogNest.apps.BlogNestConfig',
     "ckeditor",
 ]
 
@@ -122,6 +122,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Do not expire session when browser closes
+SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request
 
 
 

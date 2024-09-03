@@ -1,16 +1,20 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from . import views
-
-
+from .views import custom_logout
 
 urlpatterns = [
     path("", views.index, name="index"),
     path("index", views.index, name="index"),
     path("post/<slug:slug>/", views.post_detail, name="post"),
     path('search/', views.search, name='search'),
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register, name='register'),
     path("create_post", views.create_post, name="create_post"),
+    path('profile/', views.profile, name='profile'),
+    path('logout/', custom_logout, name='logout'),
 
 
 
