@@ -341,6 +341,7 @@ ul {
   background-color: #f0f0f0;
   color: #999;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 .tm-external-link {

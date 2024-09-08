@@ -35,7 +35,9 @@
                   class="img-fluid"
                 />
               </div>
+              {% if post.is_new %}
               <span class="position-absolute tm-new-badge">New</span>
+              {% endif %}
               <h2 class="tm-pt-30 tm-color-primary tm-post-title">
                 {{post.title}}
               </h2>
@@ -64,5 +66,28 @@
         <p>No results found.</p>
     {% endif %}
     </div>
-
+    <div class="tm-paging-wrapper">
+            <span class="d-inline-block mr-3">Page</span>
+            <nav class="tm-paging-nav d-inline-block">
+              <ul>
+                {% for num in posts.paginator.page_range %}
+                {% if num == 1 or num == posts.paginator.num_pages or num|add:"-3" <= posts.number <= num|add:"3" %}
+                    {%if posts.number == num %}
+                    <li class="tm-paging-item active">
+                    <span  class="mb-2 tm-btn tm-paging-link">{{num}}</span>
+                    </li>
+                    {% else %}
+                    <li class="tm-paging-item">
+                    <a href="?page={{ num }}" class="mb-2 tm-btn tm-paging-link">{{num}}</a>
+                    </li>
+                    {% endif %}
+                {% elif num == 2 or num == posts.paginator.num_pages|add:"-1" %}
+                <li class="tm-paging-item active">
+                  <span  class="mb-2 tm-btn tm-paging-link">...</span>
+                </li>
+                {% endif %}
+                {% endfor %}
+              </ul>
+            </nav>
+          </div>
 {% endblock %}

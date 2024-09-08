@@ -1,10 +1,14 @@
+from datetime import timedelta
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
@@ -14,14 +18,33 @@ from .forms import PostForm, CommentForm, LoginForm, RegisterForm, UserUpdateFor
 
 # Create your views here.
 def index(request):
-    post_content = Post.objects.annotate(num_comments=Count('comments'))
-    # post_content.body = mark_safe(post_content.body)
-    return render(request, "index.html", {'posts': post_content})
+    now = timezone.now()
+    twenty_four_hours_ago = now - timedelta(hours=24)
+    post_content = Post.objects.annotate(num_comments=Count('comments')).order_by('-created_at')
+    for post in post_content:
+        post.is_new = post.created_at >= twenty_four_hours_ago
+        # pagination
+    # paginator = Paginator(post_content, 1)  # Show 5 posts per page
+    # page_number = request.GET.get('page')
+    #
+    #
+    # try:
+    #     # Attempt to get the requested page
+    #     page_paj = paginator.get_page(page_number)
+    # except PageNotAnInteger:
+    #     # If the page number is not an integer, show the first page
+    #     page_paj = paginator.get_page(1)
+    # except EmptyPage:
+    #     # If the page number is out of range, show the last page of results
+    #     page_paj = paginator.get_page(paginator.num_pages)
 
+    page_paj = pagination(post_content, request, 1)
 
-# def posts(request):
-#
-#     return render(request,"post.html")
+    context = {
+        'posts': page_paj,
+    }
+
+    return render(request, "index.html", context)
 
 
 def post_detail(request, slug, ):
@@ -58,6 +81,8 @@ def post_detail(request, slug, ):
 
 
 def search(request):
+    now = timezone.now()
+    twenty_four_hours_ago = now - timedelta(hours=24)
     query = request.GET.get('query')
     if query:
         results = Post.objects.filter(
@@ -65,11 +90,49 @@ def search(request):
             Q(body__icontains=query) |
             Q(tags__name__icontains=query) |
             Q(category__name__icontains=query)
-        ).distinct()
+        ).distinct().order_by('-created_at')
+        for post in results:
+            post.is_new = post.created_at >= twenty_four_hours_ago
     else:
         results = Post.objects.none()
 
-    return render(request, 'search_results.html', {'posts': results, 'query': query})
+    # paginator = Paginator(results, 1)  # Show 5 posts per page
+    # page_number = request.GET.get('page')
+    #
+    # try:
+    #     # Attempt to get the requested page
+    #     page_paj = paginator.get_page(page_number)
+    # except PageNotAnInteger:
+    #     # If the page number is not an integer, show the first page
+    #     page_paj = paginator.get_page(1)
+    # except EmptyPage:
+    #     # If the page number is out of range, show the last page of results
+    #     page_paj = paginator.get_page(paginator.num_pages)
+    # context = {
+    #     'posts': page_paj,
+    #     'query': query
+
+    page_paj =  pagination(results,request,1)
+    context = {
+         'posts': page_paj,
+         'query': query
+     }
+
+    return render(request, 'search_results.html', context)
+def pagination(data,request ,perpage ):
+    paginator = Paginator(data, perpage)  # Show 5 posts per page
+    page_number = request.GET.get('page')
+
+    try:
+        # Attempt to get the requested page
+        page_paj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        # If the page number is not an integer, show the first page
+        page_paj = paginator.get_page(1)
+    except EmptyPage:
+        # If the page number is out of range, show the last page of results
+        page_paj = paginator.get_page(paginator.num_pages)
+    return page_paj
 
 
 def login_view(request):
@@ -89,7 +152,7 @@ def login_view(request):
                 else:
                     request.session.set_expiry(0)  # Browser session
 
-                return redirect('index')
+                return redirect('profile')
             else:
                 form.add_error(None, 'Invalid username or password')
     else:
@@ -109,9 +172,9 @@ def register(request):
 
 
 
-@login_required
-def profile(request):
-    return render(request,"profile.html")
+# @login_required
+# def profile(request):
+#     return render(request,"profile.html")
 
 @login_required
 def create_post(request):
@@ -128,7 +191,37 @@ def create_post(request):
         form = PostForm()
     return render(request, 'create_post.html', {'form': form})
 
+@login_required
+def edit_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
 
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post updated successfully!')
+            return redirect('post', slug=post.slug)
+    else:
+        form = PostForm(instance=post)
+
+    context = {
+        'form': form,
+        'post': post
+    }
+    return render(request, 'edit_post.html', context)
+@login_required
+def delete_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, 'Post deleted successfully!')
+        return redirect('profile')
+
+    context = {
+        'post': post
+    }
+    return render(request, 'confirm_delete.html', context)
 @login_required
 def profile(request):
     user = request.user

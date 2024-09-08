@@ -50,8 +50,7 @@ class Post(models.Model):
     body = RichTextField(blank=True,null=True)
     main_image = models.ImageField(upload_to='main-images/', null=True, blank=True)
     thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True)
-    intro = models.TextField(max_length=300, help_text="A short introduction or summary of the post recommended words "
-                                                      "'30' ")
+    intro = models.TextField(help_text="A short introduction or summary of the post recommended words '30' ")
     author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='posts', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, related_name='posts')
@@ -76,10 +75,8 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
-    # author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
     body = models.TextField()
     name = models.CharField(max_length=255, null=True, blank=True)
-    # email = models.EmailField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
