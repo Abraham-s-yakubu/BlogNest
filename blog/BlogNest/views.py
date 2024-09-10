@@ -1,9 +1,12 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordResetView
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count, Q
 from django.http import JsonResponse
@@ -13,7 +16,8 @@ from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
 from .models import Post
-from .forms import PostForm, CommentForm, LoginForm, RegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import PostForm, CommentForm, LoginForm, RegisterForm, UserUpdateForm, ProfileUpdateForm, \
+    CustomPasswordResetForm, ContactForm
 
 
 # Create your views here.
@@ -38,7 +42,7 @@ def index(request):
     #     # If the page number is out of range, show the last page of results
     #     page_paj = paginator.get_page(paginator.num_pages)
 
-    page_paj = pagination(post_content, request, 1)
+    page_paj = pagination(post_content, request, 6)
 
     context = {
         'posts': page_paj,
@@ -112,7 +116,7 @@ def search(request):
     #     'posts': page_paj,
     #     'query': query
 
-    page_paj =  pagination(results,request,1)
+    page_paj =  pagination(results,request,10)
     context = {
          'posts': page_paj,
          'query': query
@@ -257,8 +261,39 @@ def profile(request):
     }
 
     return render(request, 'profile.html', context)
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+    template_name = 'registration/password_reset_form.html'
+    success_url = '/password_reset/done/'
+    email_template_name = 'registration/password_reset_email.html'
 @login_required
 def custom_logout(request):
     logout(request)
     messages.success(request, "You have successfully logged out.")
     return redirect('index')
+
+
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+
+            # Send email
+            send_mail(
+                subject,  # Use the subject from the form
+                f"From: {name} <{email}>\n\n{message}",  # Message with name and email
+                email,  # From email
+                [settings.DEFAULT_FROM_EMAIL],  # To email
+                fail_silently=False,
+            )
+
+            messages.success(request, 'Your message has been sent successfully!')
+            return redirect('contact')  # Redirect to the contact page after submission
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})

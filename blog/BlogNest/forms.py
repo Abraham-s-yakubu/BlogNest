@@ -1,6 +1,6 @@
 from ckeditor.widgets import CKEditorWidget
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
 from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
 
@@ -72,3 +72,21 @@ class PostUpdateForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'intro', 'body', 'thumbnail', 'main_image', 'category', 'tags']
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        label="Email",
+        max_length=254,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'})
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError("We could not find an account with that email address.")
+        return email
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control mr-0 ml-auto', 'placeholder': 'Your Name'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control mr-0 ml-auto', 'placeholder': 'Your Email'}))
+    subject = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control mr-0 ml-auto', 'placeholder': 'Subject'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control mr-0 ml-auto', 'placeholder': 'Your Message'}))

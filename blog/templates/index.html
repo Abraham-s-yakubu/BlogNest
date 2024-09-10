@@ -64,33 +64,27 @@ https://templatemo.com/tm-553-xtra-blog
             </li>
             <li class="tm-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
               <a href="{% url 'profile' %}" class="tm-nav-link">
-                <i class="fas fa-pen"></i>
+                <i class="fas fa-user"></i>
                 Profile
               </a>
             </li>
             <li class="tm-nav-item {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
               <a href="{% url 'logout' %}" class="tm-nav-link">
-                <i class="fas fa-pen"></i>
+                <i class="fas fa-sign-out-alt"></i>
                 logout
               </a>
             </li>
             {% else %}
              <li class="tm-nav-item {% if request.resolver_match.url_name == 'login_signup' %}active{% endif %}">
               <a href="{% url 'login' %}" class="tm-nav-link">
-                <i class="fas fa-pen"></i>
+                <i class="fas fa-sign-in-alt"></i>
                 Login/signup
               </a>
             </li>
 
             {% endif %}
-            <li class="tm-nav-item {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
-              <a href="" class="tm-nav-link">
-                <i class="fas fa-users"></i>
-                About Xtra
-              </a>
-            </li>
             <li class="tm-nav-item {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
-              <a href="" class="tm-nav-link">
+              <a href="{% url 'contact' %}" class="tm-nav-link">
                 <i class="far fa-comments"></i>
                 Contact Us
               </a>
