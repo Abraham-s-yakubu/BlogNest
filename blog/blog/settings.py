@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'BlogNest.apps.BlogNestConfig',
     "ckeditor",
-    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -164,7 +163,3 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Use the secret key from the environment variables
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'fallback-default-secret-key')
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-

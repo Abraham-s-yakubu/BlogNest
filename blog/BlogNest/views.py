@@ -27,20 +27,6 @@ def index(request):
     post_content = Post.objects.annotate(num_comments=Count('comments')).order_by('-created_at')
     for post in post_content:
         post.is_new = post.created_at >= twenty_four_hours_ago
-        # pagination
-    # paginator = Paginator(post_content, 1)  # Show 5 posts per page
-    # page_number = request.GET.get('page')
-    #
-    #
-    # try:
-    #     # Attempt to get the requested page
-    #     page_paj = paginator.get_page(page_number)
-    # except PageNotAnInteger:
-    #     # If the page number is not an integer, show the first page
-    #     page_paj = paginator.get_page(1)
-    # except EmptyPage:
-    #     # If the page number is out of range, show the last page of results
-    #     page_paj = paginator.get_page(paginator.num_pages)
 
     page_paj = pagination(post_content, request, 6)
 
@@ -99,22 +85,6 @@ def search(request):
             post.is_new = post.created_at >= twenty_four_hours_ago
     else:
         results = Post.objects.none()
-
-    # paginator = Paginator(results, 1)  # Show 5 posts per page
-    # page_number = request.GET.get('page')
-    #
-    # try:
-    #     # Attempt to get the requested page
-    #     page_paj = paginator.get_page(page_number)
-    # except PageNotAnInteger:
-    #     # If the page number is not an integer, show the first page
-    #     page_paj = paginator.get_page(1)
-    # except EmptyPage:
-    #     # If the page number is out of range, show the last page of results
-    #     page_paj = paginator.get_page(paginator.num_pages)
-    # context = {
-    #     'posts': page_paj,
-    #     'query': query
 
     page_paj =  pagination(results,request,10)
     context = {
@@ -176,10 +146,6 @@ def register(request):
 
 
 
-# @login_required
-# def profile(request):
-#     return render(request,"profile.html")
-
 @login_required
 def create_post(request):
     if request.method == 'POST':
@@ -190,6 +156,7 @@ def create_post(request):
             post.author = request.user
             post.save()
             form.save_m2m()
+            messages.success(request, 'post successfully created' )
             return redirect('index')
     else:
         form = PostForm()

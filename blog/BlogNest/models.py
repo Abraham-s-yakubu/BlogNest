@@ -49,7 +49,7 @@ class Post(models.Model):
     slug = models.SlugField(unique=True,blank=True)
     body = RichTextField(blank=True,null=True)
     main_image = models.ImageField(upload_to='main-images/', null=True, blank=True)
-    thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True,help_text="recommend size '440x220'")
     intro = models.TextField(help_text="A short introduction or summary of the post recommended words '30' ")
     author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='posts', on_delete=models.CASCADE)

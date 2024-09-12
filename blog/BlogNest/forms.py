@@ -8,7 +8,6 @@ from .models import Post, Comment, Profile
 
 
 class PostForm(forms.ModelForm):
-    # body = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
     body = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Post

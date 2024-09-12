@@ -1,6 +1,6 @@
 {% extends 'index.html' %}
 {%load static%}
-{% block title %}Login{% endblock %}
+{% block title %}post{% endblock %}
 {% block content %}
  <!-- Search form -->
         <div class="row tm-row">
@@ -37,6 +37,10 @@
                   {{post.title}}
                 </h2>
                 <p class="tm-mb-40">{{ post.created_at|date:"M. d, Y" }} posted by {{post.author}}</p>
+                  <p>
+                    {{post.intro|safe}}
+
+                </p>
                 <p>
                     {{post.body|safe}}
 
@@ -82,32 +86,6 @@
                 {% else %}
                 <p>No comments yet. Be the first to comment!</p>
                 {% endif %}
-<!--                <div class="tm-comment-reply tm-mb-45">-->
-<!--                  <hr />-->
-<!--                  <div class="tm-comment">-->
-<!--                    <figure class="tm-comment-figure">-->
-<!--                      <img-->
-<!--                        src="{% static 'img/comment-2.jpg'%}"-->
-<!--                        alt="Image"-->
-<!--                        class="mb-2 rounded-circle img-thumbnail"-->
-<!--                      />-->
-<!--                      <figcaption class="tm-color-primary text-center">-->
-<!--                        Jewel Soft-->
-<!--                      </figcaption>-->
-<!--                    </figure>-->
-<!--                    <p>-->
-<!--                      Nunc et eros quis enim feugiat tincidunt et vitae dui.-->
-<!--                      Nullam consectetur justo ac ex laoreet rhoncus. Nunc id-->
-<!--                      leo pretium, faucibus sapien vel, euismod turpis.-->
-<!--                    </p>-->
-<!--                  </div>-->
-<!--                  <span class="d-block text-right tm-color-primary"-->
-<!--                    >June 21, 2020</span-->
-<!--                  >-->
-<!--                </div>-->
-
-<!--                  comment form-->
-
                 <form id="commentForm" method="post" class="mb-5 tm-comment-form">
                   {% csrf_token %}
                   <h2 class="tm-color-primary tm-post-title mb-4">
@@ -119,20 +97,8 @@
                   <div class="mb-4">
                     {{ form.name }}
                   </div>
-<!--                  <div class="mb-4">-->
-<!--&lt;!&ndash;                    <input class="form-control" name="email" type="text" />&ndash;&gt;-->
-<!--                      {{ form.email }}-->
-<!--                      {% if form.email.errors %}-->
-<!--                      <div class="error">{{ form.email.errors }}</div>-->
-<!--                      {% endif %}-->
-<!--                  </div>-->
                   <div class="mb-4">
-<!--                    <textarea-->
-<!--                      class="form-control"-->
-<!--                      name="message"-->
-<!--                      rows="6"-->
-<!--                    ></textarea>-->
-                    {{ form.body }}
+                      {{ form.body }}
                     {% if form.body.errors %}
                     <div class="error">{{ form.body.errors }}</div>
                     {% endif %}
@@ -175,19 +141,4 @@
             </div>
           </aside>
         </div>
-        <footer class="row tm-row">
-          <div class="col-md-6 col-12 tm-color-gray">
-            Design:
-            <a
-              rel="nofollow"
-              target="_parent"
-              href="https://templatemo.com"
-              class="tm-external-link"
-              >TemplateMo</a
-            >
-          </div>
-          <div class="col-md-6 col-12 tm-color-gray tm-copyright">
-            Copyright 2020 Xtra Blog Company Co. Ltd.
-          </div>
-        </footer>
 {% endblock %}
