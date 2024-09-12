@@ -1,1 +1,1 @@
-web: gunicorn BlogNest.wsgi --log-file -
+web: gunicorn blog.wsgi --log-file -
