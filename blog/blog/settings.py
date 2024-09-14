@@ -32,11 +32,10 @@ SECRET_KEY = 'django-insecure-w7mi4h2w%g9o%@5s6*qvdx)9$7xno3vsml$pm9v*+!5-*!(4w!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["reasonable-essence-production.up.railway.app"]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -81,23 +80,18 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-DATABASE_URL = os.getenv('DATABASE_URL')
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'blogdb',
-#         'USER': 'postgres',
-#         'PASSWORD': '08181817772',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'blogdb',
+        'USER': 'postgres',
+        'PASSWORD': '08181817772',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
+DATABASES["default"] = dj_database_url.parse("postgresql://blognestdb_user:XOUefcv7Za2twvASSGG04Hko5gLL05vk@dpg-crhn6188fa8c73bdmg5g-a.frankfurt-postgres.render.com/blognestdb")
 
 
 
@@ -162,7 +156,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Email settings for Django
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
