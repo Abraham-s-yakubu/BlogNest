@@ -57,6 +57,11 @@ class RegisterForm(UserCreationForm):
             user.save()
         return user
 
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        # Remove help text and other unwanted fields
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
