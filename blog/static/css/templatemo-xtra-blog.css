@@ -632,7 +632,7 @@ a:hover figcaption {
     padding: 15px;
   }
 
-  .navbar-toggler {
+  .navbar-toggler-main {
     display: block;
     position: fixed;
     left: 0;
@@ -645,7 +645,7 @@ a:hover figcaption {
     top: 5px;
   }
 
-  .tm-header.show .navbar-toggler {
+  .tm-header.show .navbar-toggler-main {
     left: 320px;
   }
 

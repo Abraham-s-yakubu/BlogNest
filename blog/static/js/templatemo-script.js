@@ -1,5 +1,5 @@
 $(function() {
-    $(".navbar-toggler").on("click", function(e) {
+    $(".navbar-toggler-main").on("click", function(e) {
         $(".tm-header").toggleClass("show");
         e.stopPropagation();
       });
