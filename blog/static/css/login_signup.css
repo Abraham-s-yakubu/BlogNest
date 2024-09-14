@@ -36,9 +36,3 @@ form {
   background-color: #d4edda;
   border-color: #c3e6cb;
 }
-#id_usable_password {
-  display: none;
-}
-#id_usable_password_helptext {
-  display: none;
-}
