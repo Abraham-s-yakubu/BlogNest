@@ -20,20 +20,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w7mi4h2w%g9o%@5s6*qvdx)9$7xno3vsml$pm9v*+!5-*!(4w!'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (os.environ.get("DEBUG", "False").lower()
+         == "true")
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOST").split(" ")
 
 # Application definition
 INSTALLED_APPS = [
@@ -77,23 +74,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blog.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blogdb',
-        'USER': 'postgres',
-        'PASSWORD': '08181817772',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': BASE_DIR / 'blogdb',
     }
 }
-DATABASES["default"] = dj_database_url.parse("postgresql://blognestdb_user:XOUefcv7Za2twvASSGG04Hko5gLL05vk@dpg-crhn6188fa8c73bdmg5g-a.frankfurt-postgres.render.com/blognestdb")
-
-
+database_url= os.environ.get("DATABASE_URL")
+DATABASES["default"] = dj_database_url.parse(database_url)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -113,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -125,15 +115,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Do not expire session when browser closes
 SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request
-
-
-
-
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -145,7 +129,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # Load environment variables from the .env file
 load_dotenv()
