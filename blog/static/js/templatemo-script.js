@@ -5,7 +5,7 @@ $(function() {
         icon.classList.toggle("fa-times");
         e.stopPropagation();
       });
-    
+
       $("html").click(function(e) {
         var header = document.getElementById("tm-header");
 
