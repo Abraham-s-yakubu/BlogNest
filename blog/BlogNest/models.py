@@ -46,7 +46,7 @@ def validate_image_format(image):
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True,blank=True)
+    slug = models.SlugField(unique=True,blank=True,max_length=300)
     body = RichTextField(blank=True,null=True)
     main_image = models.ImageField(upload_to='main-images/', null=True, blank=True)
     thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True,help_text="recommend size '440x220'")

@@ -2,13 +2,18 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
 from django.contrib.auth.models import User
-from tinymce.widgets import TinyMCE
+from django.utils.translation import gettext as _
+
 
 from .models import Post, Comment, Profile
 
 
 class PostForm(forms.ModelForm):
     body = forms.CharField(widget=CKEditorWidget())
+    thumbnail = forms.ImageField(label=_('thumbnail'), required=False,
+                                 error_messages={'invalid': _("Image files only")}, widget=forms.FileInput)
+    main_image = forms.ImageField(label=_('main_image'), required=False,
+                                  error_messages={'invalid': _("Image files only")}, widget=forms.FileInput)
     class Meta:
         model = Post
         fields = ['title', 'intro', 'body', 'thumbnail', 'main_image', 'category', 'tags']
@@ -49,6 +54,12 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
 
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        # Remove help text and other unwanted fields
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
+
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
@@ -69,6 +80,8 @@ class UserUpdateForm(forms.ModelForm):
         fields = ['first_name', 'last_name','username', 'email']
 
 class ProfileUpdateForm(forms.ModelForm):
+    profile_pic = forms.ImageField(label=_('profile_pic'), required=False,
+                                   error_messages={'invalid': _("Image files only")}, widget=forms.FileInput)
     class Meta:
         model = Profile
         fields = ['profile_pic', 'bio']
@@ -77,6 +90,7 @@ class PostUpdateForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'intro', 'body', 'thumbnail', 'main_image', 'category', 'tags']
+
 
 class CustomPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(
