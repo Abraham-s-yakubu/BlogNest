@@ -5,11 +5,13 @@
         <div class="row tm-row">
           <div class="col-12">
             <hr class="tm-hr-primary tm-mb-55" />
+
             <img
-              src="{{post.main_image.url}}"
+              src="{% static 'img/software_main.jpg'%}"
               alt=""
               class="tm-mb-40 hero-img"
             />
+
           </div>
         </div>
         <div class="row tm-row">
@@ -111,7 +113,7 @@
               <a href="{% url 'post' related_post.slug %}" class="d-block tm-mb-40">
                 <figure>
                   <img
-                    src="{{ related_post.thumbnail.url }}"
+                    src="{% static 'img/software_thumb.jpg'%}"
                     alt="Image"
                     class="mb-3 img-fluid"
                   />

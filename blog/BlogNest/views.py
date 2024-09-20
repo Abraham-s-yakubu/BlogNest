@@ -18,6 +18,7 @@ from django.utils.text import slugify
 from .models import Post
 from .forms import PostForm, CommentForm, LoginForm, RegisterForm, UserUpdateForm, ProfileUpdateForm, \
     CustomPasswordResetForm, ContactForm
+from .utils import upload_image_to_imgbb
 
 
 # Create your views here.
