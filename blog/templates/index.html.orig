@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}BlogNest{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css'%}" />
+    <!-- https://fontawesome.com/ -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"
+      rel="stylesheet"
+    />
+     <link rel="stylesheet" href="{% static 'ckeditor/ckeditor/styles.css' %}">
+     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- https://fonts.google.com/ -->
+    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/templatemo-xtra-blog.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/create_post.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/login_signup.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/profile.css'%}" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--
+    
+TemplateMo 553 Xtra Blog
+
+https://templatemo.com/tm-553-xtra-blog
+
+-->
+  </head>
+  <body>
+    <header class="tm-header" id="tm-header">
+      <div class="tm-header-wrapper">
+        <button
+          class="navbar-toggler-main"
+          type="button"
+          aria-label="Toggle navigation"
+        >
+          <i class=" nav-icon-btn fas fa-bars"></i>
+        </button>
+        <div class="tm-site-header">
+          <div class="mb-3 mx-auto tm-site-logo">
+            <i class="fas fa-window-close fa-3x"></i>
+          </div>
+          <h1 class="text-center">BlogNest</h1>
+        </div>
+        <nav class="tm-nav" id="tm-nav">
+          <ul>
+            <li class="tm-nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+              <a href="{% url 'index' %}" class="tm-nav-link">
+                <i class="fas fa-home"></i>
+                Home
+              </a>
+            </li>
+
+
+            {% if user.is_authenticated %}
+            <li class="tm-nav-item {% if request.resolver_match.url_name == 'create_post' %}active{% endif %}">
+              <a href="{% url 'create_post' %}" class="tm-nav-link">
+                <i class="fas fa-pen"></i>
+                Create post
+              </a>
+            </li>
+            <li class="tm-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+              <a href="{% url 'profile' %}" class="tm-nav-link">
+                <i class="fas fa-user"></i>
+                Profile
+              </a>
+            </li>
+            <li class="tm-nav-item {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
+              <a href="{% url 'logout' %}" class="tm-nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                logout
+              </a>
+            </li>
+            {% else %}
+             <li class="tm-nav-item {% if request.resolver_match.url_name == 'login_signup' %}active{% endif %}">
+              <a href="{% url 'login' %}" class="tm-nav-link">
+                <i class="fas fa-sign-in-alt"></i>
+                Login/signup
+              </a>
+            </li>
+
+            {% endif %}
+            <li class="tm-nav-item {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+              <a href="{% url 'contact' %}" class="tm-nav-link">
+                <i class="far fa-comments"></i>
+                Contact Us
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <div class="tm-mb-65">
+          <a
+            rel="nofollow"
+            href="https://fb.com/templatemo"
+            class="tm-social-link"
+          >
+            <i class="fab fa-facebook tm-social-icon"></i>
+          </a>
+          <a href="https://twitter.com" class="tm-social-link">
+            <i class="fab fa-twitter tm-social-icon"></i>
+          </a>
+          <a href="https://instagram.com" class="tm-social-link">
+            <i class="fab fa-instagram tm-social-icon"></i>
+          </a>
+          <a href="https://linkedin.com" class="tm-social-link">
+            <i class="fab fa-linkedin tm-social-icon"></i>
+          </a>
+        </div>
+        <p class="tm-mb-80 pr-5 text-white">
+          Welcome to BlogNest, the ultimate platform for sharing your thoughts
+          and ideas! Whether you're a seasoned writer or just starting out,
+          BlogNest provides a welcoming space for everyone to express
+          themselves. Create posts, share your stories, and connect with a
+          community of like-minded individuals..
+        </p>
+      </div>
+    </header>
+    <div class="container-fluid">
+      <main class="tm-main">
+        {% block content %}
+        {% if messages %}
+        <div id="success-alert" class="alert alert-info">
+         {% for message in messages %}
+         {{ message }}
+         {% endfor %}
+         </div>
+        {% endif %}
+        <!-- Search form -->
+        <div class="row tm-row">
+          <div class="col-12">
+            <form method="GET" action="{% url 'search' %}" class="form-inline tm-mb-80 tm-search-form">
+              <input
+                class="form-control tm-search-input"
+                name="query"
+                type="text"
+                placeholder="Search..."
+                aria-label="Search"
+              />
+              <button class="tm-search-button" type="submit">
+                <i class="fas fa-search tm-search-icon" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="row tm-row">
+          {% for post in posts  %} {% if post.slug %}
+          <article class="col-12 col-md-6 tm-post">
+            <hr class="tm-hr-primary" />
+            <a
+              href="{% url 'post' slug=post.slug %}"
+              class="effect-lily tm-post-link tm-pt-60"
+            >
+              <div class="tm-post-link-inner">
+                <img
+                  style="height: 220px"
+<<<<<<< HEAD
+                  src="{% static 'img/reseponsive_thumb.jpg'%}"
+=======
+                  src="{% static 'img/software_thumb.jpg'%}"
+>>>>>>> 8048733f620c24dce965a8189b00505ed799d4fb
+                  alt="{{ post.title }}"
+                  class="img-fluid"
+                />
+              </div>
+              {% if post.is_new %}
+              <span class="position-absolute tm-new-badge">New</span>
+              {% endif %}
+              <h2 class="tm-pt-30 tm-color-primary tm-post-title">
+                {{post.title}}
+              </h2>
+            </a>
+            <p class="tm-pt-30"><p>{{ post.intro|truncatewords:30 }}</p></p>
+            <div class="d-flex justify-content-between tm-pt-10">
+              <span class="tm-color-primary">
+              {% for tag in post.tags.all %} {{ tag.name }}{% if not forloop.last %},
+                {% endif %} {% empty %} No tags
+              {% endfor %}
+              </span>
+              <span class="tm-color-primary"
+                >{{ post.created_at|date:"M. d, Y" }}</span
+              >
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between">
+              <span
+                >{{ post.num_comments }} comment{{ post.num_comments|yesno:"s,s"}}</span
+              >
+              <span>by {{post.author}}</span>
+            </div>
+          </article>
+          {% endif %} {% endfor %}
+        </div>
+        <div class="row tm-row tm-mt-100 tm-mb-75">
+          <div class="tm-prev-next-wrapper">
+
+            <a
+              href="?page={% if posts.has_previous %}{{ posts.previous_page_number }}{% endif %}"
+              class="mb-2 tm-btn tm-btn-primary tm-prev-next {% if not posts.has_previous %}  disabled {% endif %} tm-mr-20"
+              >Prev</a
+            >
+
+
+            <a href="?page={% if posts.has_next %}{{ posts.next_page_number}}{% endif %}" class="mb-2 tm-btn tm-btn-primary tm-prev-next {% if not posts.has_next %}  disabled {% endif %}">Next</a>
+
+          </div>
+          <div class="tm-paging-wrapper">
+            <span class="d-inline-block mr-3">Page</span>
+            <nav class="tm-paging-nav d-inline-block">
+              <ul>
+                {% for num in posts.paginator.page_range %}
+                {% if num == 1 or num == posts.paginator.num_pages or num|add:"-3" <= posts.number <= num|add:"3" %}
+                    {%if posts.number == num %}
+                    <li class="tm-paging-item active">
+                    <span  class="mb-2 tm-btn tm-paging-link">{{num}}</span>
+                    </li>
+                    {% else %}
+                    <li class="tm-paging-item">
+                    <a href="?page={{ num }}" class="mb-2 tm-btn tm-paging-link">{{num}}</a>
+                    </li>
+                    {% endif %}
+                {% elif num == 2 or num == posts.paginator.num_pages|add:"-1" %}
+                <li class="tm-paging-item active">
+                  <span  class="mb-2 tm-btn tm-paging-link">...</span>
+                </li>
+                {% endif %}
+                {% endfor %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+        {% endblock %}
+        </main>
+        <footer class="row tm-row">
+          <hr class="col-12" />
+          <div class="col-md-6 col-12 tm-color-gray">
+            Design:
+            <a
+              rel="nofollow"
+              target="_parent"
+              href="https://templatemo.com"
+              class="tm-external-link"
+              >TemplateMo</a
+            >
+          </div>
+          <div class="col-md-6 col-12 tm-color-gray tm-copyright">
+            Copyright 2020 Xtra Blog Company Co. Ltd.
+          </div>
+        </footer>
+
+    </div>
+
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script src="{% static 'js/templatemo-script.js'%}"></script>
+    <script src="{% static 'js/login_registration.js'%}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+
+
+  </body>
+</html>
