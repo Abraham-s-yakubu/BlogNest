@@ -6,7 +6,7 @@
           <div class="col-12">
             <hr class="tm-hr-primary tm-mb-55" />
             <img
-              src="{{post.main_image.url}}"
+              src="{% static 'img/responsive_main.png'%}"
               alt=""
               class="tm-mb-40 hero-img"
             />
@@ -108,7 +108,7 @@
                 Related Posts
               </h2>
               {% for related_post in related_posts %}
-              <a href="{% url 'post' related_post.slug %}" class="d-block tm-mb-40">
+              <a href="{% static 'img/reseponsive_thumb.jpg'%}" class="d-block tm-mb-40">
                 <figure>
                   <img
                     src="{{ related_post.thumbnail.url }}"
